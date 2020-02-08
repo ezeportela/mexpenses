@@ -3,13 +3,28 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Layout from './Layout';
 import Info from './Info';
 import Signin from './Signin';
+import EditAccount from './pages/EditAccount';
+import AccountsList from './pages/AccountsList';
 
 export default Router = props => (
   <BrowserRouter>
     <Layout currentUser={props.currentUser}>
       <Switch>
         <Route exact path="/" component={Info} />
-        <Route exact path="/signin" component={Signin} />
+
+        {props.currentUser ? (
+          <React.Fragment>
+            <Route exact path="/accounts" component={AccountsList} />
+            <Route exact path="/accounts/create" component={EditAccount} />
+            <Route
+              exact
+              path="/accounts/:accountId/edit"
+              component={EditAccount}
+            />
+          </React.Fragment>
+        ) : (
+          <Route exact path="/signin" component={Signin} />
+        )}
       </Switch>
     </Layout>
   </BrowserRouter>
