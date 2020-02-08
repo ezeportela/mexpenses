@@ -24,5 +24,6 @@ accounts-ui
 accounts-password
 msavin:jetsetter
 msavin:mongol
-meteorhacks:npm
-jquery
+
+
+npm-container
