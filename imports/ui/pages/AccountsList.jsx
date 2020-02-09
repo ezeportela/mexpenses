@@ -1,45 +1,41 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Accounts } from '../../api/accounts';
-import Container from '../Container';
 import { Link } from 'react-router-dom';
 import M from 'materialize-css';
+import Container from '../Container';
+import Card from '../components/Card';
 
-class AccountsList extends Component {
-  componentDidMount() {
+const AccountsList = props => {
+  useEffect(() => {
     const elems = document.querySelectorAll('.fixed-action-btn');
     const instances = M.FloatingActionButton.init(elems, {});
-  }
+  });
 
-  render() {
-    const accounts = this.props.accounts.map(account =>
-      this.makeListItem(account)
-    );
-
-    return (
-      <Container>
-        <div className="fixed-action-btn">
-          <Link to="/accounts/create" className="btn-floating btn-large red">
-            <i className="large material-icons">add</i>
-          </Link>
-        </div>
-
-        <ul className="collection">{accounts}</ul>
-      </Container>
-    );
-  }
-
-  makeListItem(account) {
+  const makeListItem = account => {
     const to = `/accounts/${account._id}/edit`;
     return (
-      <Link key={account._id} className="collection-item" to={to}>
-        <h5>{account.name}</h5>
+      <Card key={account._id} title={account.name} to={to} hoverable={true}>
         <p>each {account.periodicity} month/s</p>
-      </Link>
+      </Card>
     );
-  }
-}
+  };
+
+  const accounts = props.accounts.map(account => makeListItem(account));
+
+  return (
+    <Container>
+      <div className="row">{accounts}</div>
+
+      <div className="fixed-action-btn">
+        <Link to="/accounts/create" className="btn-floating btn-large red">
+          <i className="large material-icons">add</i>
+        </Link>
+      </div>
+    </Container>
+  );
+};
 
 export default AccountsContainer = withTracker(() => {
   return {

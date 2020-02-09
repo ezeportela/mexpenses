@@ -5,3 +5,8 @@ body {
 .navbar-fixed {
   z-index: 999;
 }
+
+.card-actions {
+  display: flex;
+  justify-content: space-around;
+}

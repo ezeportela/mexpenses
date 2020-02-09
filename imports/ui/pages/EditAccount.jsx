@@ -1,87 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Accounts } from '../../api/accounts';
 import Container from '../Container';
 import TextInput from '../components/TextInput';
 import M from 'materialize-css';
+import { usePrevious } from '../hooks';
+import Card from '../components/Card';
+import { Link } from 'react-router-dom';
 
 const EditAccount = props => {
+  const { id } = props;
+  const [account, setAccount] = useState({ name: '', periodicity: 1 });
+  const prevFetch = usePrevious(props.account);
+
   useEffect(() => {
+    if (prevFetch != props.account) {
+      setAccount(props.account);
+    }
     M.updateTextFields();
   });
-
-  return (
-    <Container>
-      <form onSubmit={props.handleSubmit}>
-        <TextInput
-          id="name"
-          name="name"
-          onChange={props.handleChange}
-          label="Account Name"
-          icon="label"
-          value={props.account.name}
-        />
-
-        <TextInput
-          id="periodicity"
-          name="periodicity"
-          label="Periodicity"
-          type="number"
-          onChange={props.handleChange}
-          value={props.account.periodicity}
-          icon="calendar_today"
-        />
-
-        <button
-          className="btn waves-effect waves-light"
-          type="submit"
-          name="action">
-          <i className="material-icons left">save</i>
-          Submit
-        </button>
-      </form>
-    </Container>
-  );
-};
-
-// const EditAccountContainer = withTracker(props => {
-//   const { id } = props;
-//   const account = Accounts.findOne({ _id: id }) || {};
-
-//   const handleChange = e =>
-//     Object.assign(account, {
-//       ...account,
-//       [e.target.name]: e.target.value
-//     });
-
-//   const handleSubmit = e => {
-//     e.preventDefault();
-//     if (id) {
-//       updateAccount(id, acccount);
-//     } else {
-//       Meteor.call('createAccount', account);
-//       props.history.push('/accounts');
-//     }
-//   };
-
-//   return {
-//     account,
-//     handleChange,
-//     handleSubmit
-//   };
-// })(EditAccountComponent);
-
-export default EditAccountContainer = props => {
-  const { accountId } = useParams();
-  const [account, setAccount] = useState({ name: '', periodicity: 1 });
-
-  useEffect(() => {
-    const acc = Accounts.findOne({ _id: accountId });
-
-    if (acc) setAccount(acc);
-  }, []);
 
   const handleChange = e =>
     setAccount({
@@ -91,8 +29,8 @@ export default EditAccountContainer = props => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (accountId) {
-      Meteor.call('updateAccount', accountId, account);
+    if (id) {
+      Meteor.call('updateAccount', id, account);
     } else {
       Meteor.call('createAccount', account);
     }
@@ -101,10 +39,56 @@ export default EditAccountContainer = props => {
   };
 
   return (
-    <EditAccount
-      account={account}
-      handleChange={handleChange}
-      handleSubmit={handleSubmit}
-    />
+    <Container>
+      <Card hoverable={false} title={props.title}>
+        <form onSubmit={handleSubmit}>
+          <TextInput
+            id="name"
+            name="name"
+            onChange={handleChange}
+            label="Account Name"
+            icon="label"
+            value={account.name}
+          />
+
+          <TextInput
+            id="periodicity"
+            name="periodicity"
+            label="Periodicity"
+            type="number"
+            onChange={handleChange}
+            value={account.periodicity}
+            icon="calendar_today"
+          />
+
+          <div className="card-actions">
+            <Link
+              to="/accounts"
+              className="btn grey lighten-3 black-text waves-effect waves-light">
+              <i className="material-icons left">clear</i>
+              Cancel
+            </Link>
+
+            <button
+              className="btn waves-effect waves-light"
+              type="submit"
+              name="action">
+              <i className="material-icons left">save</i>
+              Submit
+            </button>
+          </div>
+        </form>
+      </Card>
+    </Container>
   );
 };
+
+export default EditAccountContainer = withTracker(props => {
+  const { accountId: id } = props.match.params;
+
+  return {
+    id,
+    account: Accounts.findOne({ _id: id }) || {},
+    title: id ? 'Edit Account' : 'New Account'
+  };
+})(EditAccount);
