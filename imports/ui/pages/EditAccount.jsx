@@ -8,6 +8,7 @@ import M from 'materialize-css';
 import { usePrevious } from '../hooks';
 import Card from '../components/Card';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 const EditAccount = props => {
   const { id } = props;
@@ -15,7 +16,8 @@ const EditAccount = props => {
   const prevFetch = usePrevious(props.account);
 
   useEffect(() => {
-    if (prevFetch != props.account) {
+    if (prevFetch != props.account && !_.isEmpty(props.account)) {
+      console.log('executed useEffect', props.account);
       setAccount(props.account);
     }
     M.updateTextFields();
@@ -29,12 +31,7 @@ const EditAccount = props => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (id) {
-      Meteor.call('updateAccount', id, account);
-    } else {
-      Meteor.call('createAccount', account);
-    }
-
+    Meteor.call('saveAccount', id, account);
     props.history.push('/accounts');
   };
 
@@ -74,7 +71,7 @@ const EditAccount = props => {
               type="submit"
               name="action">
               <i className="material-icons left">save</i>
-              Submit
+              Save
             </button>
           </div>
         </form>

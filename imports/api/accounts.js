@@ -4,7 +4,7 @@ import { Mongo } from 'meteor/mongo';
 export const Accounts = new Mongo.Collection('accounts');
 
 Meteor.methods({
-  createAccount(account) {
+  saveAccount(id, account) {
     // check(seccion, {
     //     key: String,
     //     titleLink: Match.Maybe(String),
@@ -12,22 +12,18 @@ Meteor.methods({
     //     body: Match.Maybe(String),
     //     bodyInvisible: Match.Maybe(String),
     // });
-    Accounts.insert({
-      ...account,
-      createdAt: new Date(),
-      owner: this.userId,
-      username: Meteor.users.findOne(this.userId).username
-    });
-  },
+    const user = Meteor.users.findOne(this.userId);
 
-  updateAccount(id, account) {
-    // check(seccion, {
-    //     key: String,
-    //     titleLink: Match.Maybe(String),
-    //     title: Match.Maybe(String),
-    //     body: Match.Maybe(String),
-    //     bodyInvisible: Match.Maybe(String),
-    // });
-    Accounts.upsert(id, account);
+    if (!id) {
+      Object.assign(account, {
+        active: true,
+        owner: this.userId,
+        displayName: user.profile.displayName,
+        email: user.emails[0].address
+      });
+      return Accounts.insert(account);
+    }
+
+    Accounts.update(id, account);
   }
 });

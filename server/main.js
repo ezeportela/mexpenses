@@ -2,7 +2,9 @@ import { Meteor } from 'meteor/meteor';
 import Links from '/imports/api/links';
 import { Expenses } from '/imports/api/expenses';
 import { Accounts } from '/imports/api/accounts';
-import './scheduled';
+import '../imports/hooks/accounts';
+
+import './schedule';
 
 function insertLink(title, url) {
   Links.insert({ title, url, createdAt: new Date() });
