@@ -1,20 +1,17 @@
 import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-
-export const Accounts = new Mongo.Collection('accounts');
+import { check, Match } from 'meteor/check';
+import { Accounts } from './index';
 
 Meteor.methods({
   saveAccount(id, account) {
-    // check(seccion, {
-    //     key: String,
-    //     titleLink: Match.Maybe(String),
-    //     title: Match.Maybe(String),
-    //     body: Match.Maybe(String),
-    //     bodyInvisible: Match.Maybe(String),
-    // });
     const user = Meteor.users.findOne(this.userId);
 
     if (!id) {
+      check(account, {
+        name: String,
+        periodicity: Match.Integer
+      });
+
       Object.assign(account, {
         active: true,
         owner: this.userId,
@@ -25,5 +22,13 @@ Meteor.methods({
     }
 
     Accounts.update(id, account);
+  },
+
+  updatePeriodsAccount(id, { lastPeriod, nextPeriod }) {
+    check(id, String);
+    check(lastPeriod, Match.Integer);
+    check(nextPeriod, Match.Integer);
+
+    Accounts.update(id, { $set: { lastPeriod, nextPeriod } });
   }
 });

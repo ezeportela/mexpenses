@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Layout from './Layout';
+import Layout from './components/Layout';
 import Info from './Info';
-import Signin from './Signin';
+import Signin from './pages/Signin';
 import EditAccount from './pages/EditAccount';
 import AccountsList from './pages/AccountsList';
 

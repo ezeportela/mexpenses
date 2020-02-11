@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Accounts } from '../../api/accounts';
-import Container from '../Container';
+import Container from '../components/Container';
 import TextInput from '../components/TextInput';
 import M from 'materialize-css';
 import { usePrevious } from '../hooks';
@@ -31,6 +31,10 @@ const EditAccount = props => {
 
   const handleSubmit = e => {
     e.preventDefault();
+    const { periodicity } = account;
+    Object.assign(account, {
+      periodicity: parseInt(periodicity)
+    });
     Meteor.call('saveAccount', id, account);
     props.history.push('/accounts');
   };

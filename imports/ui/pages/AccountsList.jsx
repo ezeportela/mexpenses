@@ -4,7 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Accounts } from '../../api/accounts';
 import { Link } from 'react-router-dom';
 import M from 'materialize-css';
-import Container from '../Container';
+import Container from '../components/Container';
 import Card from '../components/Card';
 
 const AccountsList = props => {
