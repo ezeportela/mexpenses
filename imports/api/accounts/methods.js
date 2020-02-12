@@ -9,7 +9,8 @@ Meteor.methods({
     if (!id) {
       check(account, {
         name: String,
-        periodicity: Match.Integer
+        periodicity: Match.Integer,
+        lastPrice: Number
       });
 
       Object.assign(account, {

@@ -12,12 +12,20 @@ import _ from 'lodash';
 
 const EditAccount = props => {
   const { id } = props;
-  const [account, setAccount] = useState({ name: '', periodicity: 1 });
+  const [account, setAccount] = useState({
+    name: '',
+    periodicity: 1,
+    lastPrice: 0
+  });
   const prevFetch = usePrevious(props.account);
 
   useEffect(() => {
-    if (prevFetch != props.account && !_.isEmpty(props.account)) {
-      console.log('executed useEffect', props.account);
+    if (
+      prevFetch !== props.account &&
+      !_.isEmpty(props.account) &&
+      (_.isEmpty(prevFetch) ||
+        confirm('The record has been updated. Would you like to reload it?'))
+    ) {
       setAccount(props.account);
     }
     M.updateTextFields();
@@ -31,9 +39,10 @@ const EditAccount = props => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    const { periodicity } = account;
+    const { periodicity, lastPrice } = account;
     Object.assign(account, {
-      periodicity: parseInt(periodicity)
+      periodicity: parseInt(periodicity),
+      lastPrice: parseInt(lastPrice)
     });
     Meteor.call('saveAccount', id, account);
     props.history.push('/accounts');
@@ -60,6 +69,16 @@ const EditAccount = props => {
             onChange={handleChange}
             value={account.periodicity}
             icon="calendar_today"
+          />
+
+          <TextInput
+            id="price"
+            name="lastPrice"
+            label="Price"
+            type="number"
+            onChange={handleChange}
+            value={account.lastPrice}
+            icon="attach_money"
           />
 
           <div className="card-actions">

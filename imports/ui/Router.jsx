@@ -5,6 +5,7 @@ import Info from './Info';
 import Signin from './pages/Signin';
 import EditAccount from './pages/EditAccount';
 import AccountsList from './pages/AccountsList';
+import ExpensesList from './pages/ExpensesList';
 
 export default Router = props => (
   <BrowserRouter>
@@ -14,6 +15,7 @@ export default Router = props => (
 
         {props.currentUser ? (
           <React.Fragment>
+            <Route exact path="/expenses" component={ExpensesList} />
             <Route exact path="/accounts" component={AccountsList} />
             <Route exact path="/accounts/create" component={EditAccount} />
             <Route

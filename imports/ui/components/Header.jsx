@@ -7,10 +7,13 @@ import Blaze from 'meteor/gadicc:blaze-react-component';
 const Header = props => {
   useEffect(() => {
     const elems = document.querySelectorAll('.sidenav');
-    const instances = M.Sidenav.init(elems, {});
+    M.Sidenav.init(elems, {});
   });
 
-  const routes = [{ label: 'Accounts', to: '/accounts' }];
+  const routes = [
+    { label: 'Expenses', to: '/expenses' },
+    { label: 'Accounts', to: '/accounts' }
+  ];
 
   return (
     <div className="navbar-fixed">
@@ -23,9 +26,11 @@ const Header = props => {
           <ul className="right hide-on-med-and-down">
             {props.currentUser ? (
               <React.Fragment>
-                <li>
-                  <Link to="/accounts">Accounts</Link>
-                </li>
+                {routes.map(route => (
+                  <li key={route.to}>
+                    <Link to={route.to}>{route.label}</Link>
+                  </li>
+                ))}
                 <li>Hi, {props.currentUser.profile.displayName}!</li>
                 <li>
                   <Blaze template="atNavButton" />

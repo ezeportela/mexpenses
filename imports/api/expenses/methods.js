@@ -10,6 +10,7 @@ Meteor.methods({
         name: accountName,
         nextPeriod: period,
         periodicity: accountPeriodicity,
+        lastPrice: price,
         owner,
         email,
         displayName
@@ -20,7 +21,7 @@ Meteor.methods({
         accountName,
         accountPeriodicity,
         period,
-        price: 0,
+        price,
         paid: false,
         type: 'fixed',
         owner,
