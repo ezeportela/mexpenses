@@ -22,6 +22,7 @@ Meteor.methods({
         accountPeriodicity,
         period,
         price,
+        realPrice: price,
         paid: false,
         type: 'fixed',
         owner,

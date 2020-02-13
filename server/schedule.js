@@ -1,13 +1,17 @@
 import Links from '/imports/api/links';
+import moment from 'moment';
 
 function insertLink(title, url) {
   Links.insert({ title, url, createdAt: new Date() });
 }
 
 SyncedCron.add({
-  name: 'Crunch some important numbers for the marketing department',
-  schedule: parser => parser.text('every 5 seconds'),
+  name: 'Crunch test',
+  schedule: parser => parser.text('every 30 mins'),
   job: () => {
-    insertLink('test cron', 'http://guide.meteor.com');
+    insertLink(
+      `executed at ${moment().format('MMMM Do YYYY, h:mm:ss a')}`,
+      'http://localhost:3000'
+    );
   }
 });

@@ -1,0 +1,10 @@
+.ExpenseList__payment-card {
+  display: flex;
+}
+
+.ExpenseList__payment-card-checkbox {
+}
+
+.ExpenseList__payment-card-info {
+  flex-direction: column;
+}

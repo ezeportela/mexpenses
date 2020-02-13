@@ -4,6 +4,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Expenses } from '../../api/expenses';
 import Container from '../components/Container';
 import Card from '../components/Card';
+import './styles/ExpenseList.css';
 
 const ExpensesList = props => {
   const [checkedList, setCheckedList] = useState([]);
@@ -17,20 +18,29 @@ const ExpensesList = props => {
 
   const makeListItem = expense => {
     return (
-      <Card key={expense._id} title={expense.accountName}>
-        <form>
-          <label>
-            <input
-              type="checkbox"
-              className="filled-in"
-              value={expense._id}
-              onChange={handleCheckboxChange}
-            />
-            <span></span>
-          </label>
-        </form>
-        <p>{expense.price}</p>
-        <p>{expense.period}</p>
+      <Card key={expense._id}>
+        <div className="ExpenseList__payment-card">
+          <div className="ExpenseList__payment-card-checkbox">
+            <label>
+              <input
+                type="checkbox"
+                className="filled-in"
+                value={expense._id}
+                onChange={handleCheckboxChange}
+              />
+              <span></span>
+            </label>
+          </div>
+
+          <div className="ExpenseList__payment-card-info">
+            <strong>{expense.accountName}</strong>
+            <p>{expense.period}</p>
+          </div>
+
+          <div>
+            <p>{expense.price}</p>
+          </div>
+        </div>
       </Card>
     );
   };

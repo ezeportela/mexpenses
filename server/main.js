@@ -14,10 +14,12 @@ function insertLink(title, url) {
 }
 
 Meteor.startup(() => {
-  // SyncedCron.start();
+  SyncedCron.start();
+
   // Meteor.setTimeout(function() {
   //   SyncedCron.stop();
   // }, 15 * 1000);
+
   // If the Links collection is empty, add some data.
   // if (Links.find().count() === 0) {
   //   insertLink(
