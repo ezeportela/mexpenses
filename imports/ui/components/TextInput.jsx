@@ -2,9 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default TextInput = props => {
-  const { col, icon, id, type, value, onChange, label, name } = props;
+  const {
+    col,
+    icon,
+    id,
+    type,
+    value,
+    onChange,
+    label,
+    name,
+    readOnly,
+    required
+  } = props;
   const inputCol = col || 's12';
-  const inputType = type || 'text';
   const cssClasses = `input-field col ${inputCol}`;
 
   return (
@@ -13,11 +23,12 @@ export default TextInput = props => {
       <input
         id={id}
         name={name}
-        type={inputType}
+        type={type || 'text'}
         className="validate"
         value={value}
         onChange={onChange}
-        required
+        required={required || true}
+        readOnly={readOnly || false}
       />
       <label htmlFor={id}>{label}</label>
     </div>
@@ -29,5 +40,7 @@ TextInput.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   icon: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
+  readOnly: PropTypes.bool
 };

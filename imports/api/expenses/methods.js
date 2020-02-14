@@ -4,7 +4,7 @@ import { Expenses } from './index';
 import { Accounts } from '../accounts';
 
 Meteor.methods({
-  createExpenseFromAccount(account) {
+  'expenses.createFromAccount'(account) {
     if (account.nextPeriod === getPeriod() && account.active) {
       const {
         _id: accountId,
@@ -33,16 +33,16 @@ Meteor.methods({
     }
   },
 
-  createExpensesFromAccounts() {
+  'expenses.createFromAccounts'() {
     const period = getPeriod();
     const accounts = Accounts.find({ nextPeriod: period });
 
     for (const account of accounts) {
-      Meteor.call('createExpenseFromAccount', account);
+      Meteor.call('expenses.createFromAccount', account);
     }
   },
 
-  payExpense(expenseId) {
+  'expenses.pay'(expenseId) {
     Expenses.update(expenseId, { $set: { paid: true } });
   }
 });

@@ -15,7 +15,7 @@ Expenses.after.insert((id, doc) => {
     accountPeriodicity: periodicity
   } = doc;
   const nextPeriod = getPeriod(periodicity, [lastPeriod, 'YYYYMM']);
-  Meteor.call('updatePeriodsAccount', accountId, {
+  Meteor.call('accounts.updatePeriods', accountId, {
     lastPeriod,
     nextPeriod
   });

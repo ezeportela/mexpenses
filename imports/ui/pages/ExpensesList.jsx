@@ -5,7 +5,8 @@ import { Expenses } from '../../api/expenses';
 import Container from '../components/Container';
 import Card from '../components/Card';
 import './styles/ExpenseList.css';
-import moment from 'moment';
+import { formatPeriod } from '../../api/common';
+import Checkbox from '../components/Checkbox';
 
 const ExpenseItem = props => {
   const {
@@ -16,22 +17,16 @@ const ExpenseItem = props => {
     realPrice,
     handleCheckboxChange
   } = props;
-  const formatedPeriod = moment(period, 'YYYYMM').format('MMM YYYY');
-  const handleClickPayButton = e => Meteor.call('payExpense', _id);
+  const formatedPeriod = formatPeriod(period);
+  const handleClickPayButton = e => Meteor.call('expenses.pay', _id);
   return (
     <Card>
       <div className="row expense-card-row">
-        <div className="col s1 expense-card-checkbox">
-          <label>
-            <input
-              type="checkbox"
-              className="filled-in"
-              value={_id}
-              onChange={handleCheckboxChange}
-            />
-            <span></span>
-          </label>
-        </div>
+        <Checkbox
+          col="s1 expense-card-checkbox"
+          value={_id}
+          onChange={handleCheckboxChange}
+        />
 
         <div className="col s11">
           <div className="row expense-card-row">

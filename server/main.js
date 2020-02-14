@@ -14,6 +14,6 @@ function insertLink(title, url) {
 }
 
 Meteor.startup(() => {
-  Meteor.call('createExpensesFromAccounts');
+  Meteor.call('expenses.createFromAccounts');
   SyncedCron.start();
 });

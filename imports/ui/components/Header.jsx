@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import M from 'materialize-css';
 import Blaze from 'meteor/gadicc:blaze-react-component';
+import LinkButton from './LinkButton';
 
 const Header = props => {
   useEffect(() => {
@@ -11,9 +12,25 @@ const Header = props => {
   });
 
   const routes = [
-    { label: 'Expenses', to: '/expenses' },
-    { label: 'Accounts', to: '/accounts' }
+    { label: 'Expenses', to: '/expenses', protected: true },
+    { label: 'Accounts', to: '/accounts', protected: true }
   ];
+
+  const makeLinks = routes =>
+    routes.map(
+      route =>
+        (!route.protected || (route.protected && props.currentUser)) && (
+          <li key={route.to}>
+            <Link className="sidenav-close" to={route.to}>
+              {route.label}
+            </Link>
+          </li>
+        )
+    );
+
+  const signinButton = (
+    <LinkButton to="/signin" classNames="sidenav-close" label="Sign in" />
+  );
 
   return (
     <div className="navbar-fixed">
@@ -26,35 +43,27 @@ const Header = props => {
           <ul className="right hide-on-med-and-down">
             {props.currentUser ? (
               <React.Fragment>
-                {routes.map(route => (
-                  <li key={route.to}>
-                    <Link to={route.to}>{route.label}</Link>
-                  </li>
-                ))}
+                {makeLinks(routes)}
                 <li>Hi, {props.currentUser.profile.displayName}!</li>
                 <li>
                   <Blaze template="atNavButton" />
                 </li>
               </React.Fragment>
             ) : (
-              <li>
-                <Link to="/signin" className="btn">
-                  Sign in
-                </Link>
-              </li>
+              <li>{signinButton}</li>
             )}
           </ul>
 
           <ul id="nav-mobile" className="sidenav">
-            <li>
-              <a className="sidenav-close" href="/">
-                Scripts
-              </a>
-            </li>
+            {makeLinks(routes)}
 
-            <li>
-              <Blaze template="atNavButton" />
-            </li>
+            {props.currentUser ? (
+              <li>
+                <Blaze template="atNavButton" />
+              </li>
+            ) : (
+              <li>{signinButton}</li>
+            )}
           </ul>
 
           <a href="#" data-target="nav-mobile" className="sidenav-trigger">

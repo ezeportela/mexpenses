@@ -7,15 +7,21 @@ import TextInput from '../components/TextInput';
 import M from 'materialize-css';
 import { usePrevious } from '../hooks';
 import Card from '../components/Card';
-import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import Button from '../components/Button';
+import LinkButton from '../components/LinkButton';
+import { getPeriod, formatPeriod } from '../../api/common';
+import Checkbox from '../components/Checkbox';
 
 const EditAccount = props => {
   const { id } = props;
   const [account, setAccount] = useState({
     name: '',
     periodicity: 1,
-    lastPrice: 0
+    lastPrice: 0,
+    lastPeriod: getPeriod(),
+    expiredDay: 10,
+    active: true
   });
   const prevFetch = usePrevious(props.account);
 
@@ -37,6 +43,18 @@ const EditAccount = props => {
       [e.target.name]: e.target.value
     });
 
+  const handleCheckboxChange = e =>
+    setAccount({
+      ...account,
+      [e.target.name]: e.target.checked
+    });
+
+  const handleClickDelete = () => {
+    if (confirm('Are you sure do you want to delete the account?')) {
+      Meteor.call('accounts.delete', account._id);
+      props.history.push('/accounts');
+    }
+  };
   const handleSubmit = e => {
     e.preventDefault();
     const { periodicity, lastPrice } = account;
@@ -44,15 +62,16 @@ const EditAccount = props => {
       periodicity: parseInt(periodicity),
       lastPrice: parseInt(lastPrice)
     });
-    Meteor.call('saveAccount', id, account);
+    Meteor.call('accounts.save', id, account);
     props.history.push('/accounts');
   };
 
   return (
     <Container>
       <Card hoverable={false} title={props.title}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="row">
           <TextInput
+            col="s12 m6"
             id="name"
             name="name"
             onChange={handleChange}
@@ -62,16 +81,7 @@ const EditAccount = props => {
           />
 
           <TextInput
-            id="periodicity"
-            name="periodicity"
-            label="Periodicity"
-            type="number"
-            onChange={handleChange}
-            value={account.periodicity}
-            icon="calendar_today"
-          />
-
-          <TextInput
+            col="s12 m6"
             id="price"
             name="lastPrice"
             label="Price"
@@ -81,21 +91,67 @@ const EditAccount = props => {
             icon="attach_money"
           />
 
-          <div className="card-actions">
-            <Link
-              to="/accounts"
-              className="btn grey lighten-3 black-text waves-effect waves-light">
-              <i className="material-icons left">clear</i>
-              Cancel
-            </Link>
+          <TextInput
+            col="s12 m6"
+            id="periodicity"
+            name="periodicity"
+            label="Periodicity"
+            type="number"
+            onChange={handleChange}
+            value={account.periodicity}
+            icon="calendar_view_day"
+          />
 
-            <button
-              className="btn waves-effect waves-light"
-              type="submit"
-              name="action">
-              <i className="material-icons left">save</i>
-              Save
-            </button>
+          <TextInput
+            col="s12 m6"
+            id="lastPeriod"
+            name="lastPeriod"
+            label="Last Period"
+            type="text"
+            value={formatPeriod(account.lastPeriod)}
+            readOnly={true}
+            icon="calendar_today"
+            required={false}
+          />
+
+          <TextInput
+            col="s12 m6"
+            id="expiredDay"
+            name="expiredDay"
+            label="Expired Day"
+            type="number"
+            value={account.expiredDay}
+            onChange={handleChange}
+            icon="history"
+          />
+
+          <Checkbox
+            name="active"
+            col="input-field s12 m6"
+            label="Active"
+            checked={account.active}
+            onChange={handleCheckboxChange}
+          />
+
+          <div className="card-actions col s12">
+            <LinkButton
+              to="/accounts"
+              classNames="grey lighten-3 black-text"
+              icon="clear"
+              label="Cancel"
+            />
+
+            {account._id && (
+              <Button
+                type="button"
+                icon="delete"
+                label="Delete"
+                classNames="grey lighten-3 black-text"
+                onClick={handleClickDelete}
+              />
+            )}
+
+            <Button type="submit" icon="save" label="Save" />
           </div>
         </form>
       </Card>

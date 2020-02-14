@@ -12,5 +12,5 @@ Accounts.before.insert((id, doc) => {
 });
 
 Accounts.after.insert((id, doc) => {
-  Meteor.call('createExpenseFromAccount', doc);
+  Meteor.call('expenses.createFromAccount', doc);
 });

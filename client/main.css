@@ -10,3 +10,7 @@ body {
   display: flex;
   justify-content: space-around;
 }
+
+.sidenav-overlay {
+  display: none !important;
+}

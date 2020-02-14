@@ -3,14 +3,16 @@ import { check, Match } from 'meteor/check';
 import { Accounts } from './index';
 
 Meteor.methods({
-  saveAccount(id, account) {
+  'accounts.save'(id, account) {
     const user = Meteor.users.findOne(this.userId);
 
     if (!id) {
       check(account, {
         name: String,
         periodicity: Match.Integer,
-        lastPrice: Number
+        lastPrice: Number,
+        lastPeriod: Number,
+        expiredDay: 10
       });
 
       Object.assign(account, {
@@ -25,11 +27,17 @@ Meteor.methods({
     Accounts.update(id, account);
   },
 
-  updatePeriodsAccount(id, { lastPeriod, nextPeriod }) {
+  'accounts.updatePeriods'(id, { lastPeriod, nextPeriod }) {
     check(id, String);
     check(lastPeriod, Match.Integer);
     check(nextPeriod, Match.Integer);
 
     Accounts.update(id, { $set: { lastPeriod, nextPeriod } });
+  },
+
+  'accounts.delete'(id) {
+    check(id, String);
+
+    Accounts.remove(id);
   }
 });
