@@ -5,7 +5,58 @@ import { Expenses } from '../../api/expenses';
 import Container from '../components/Container';
 import Card from '../components/Card';
 import './styles/ExpenseList.css';
+import moment from 'moment';
 
+const ExpenseItem = props => {
+  const {
+    _id,
+    accountName,
+    period,
+    price,
+    realPrice,
+    handleCheckboxChange
+  } = props;
+  const formatedPeriod = moment(period, 'YYYYMM').format('MMM YYYY');
+  const handleClickPayButton = e => Meteor.call('payExpense', _id);
+  return (
+    <Card>
+      <div className="row expense-card-row">
+        <div className="col s1 expense-card-checkbox">
+          <label>
+            <input
+              type="checkbox"
+              className="filled-in"
+              value={_id}
+              onChange={handleCheckboxChange}
+            />
+            <span></span>
+          </label>
+        </div>
+
+        <div className="col s11">
+          <div className="row expense-card-row">
+            <div className="col s5">
+              <span className="card-title">{accountName}</span>
+              <p>{formatedPeriod}</p>
+            </div>
+            <div className="col s5">
+              <p className="expense-card-price">$ {realPrice}</p>
+            </div>
+            <div className="col s2">
+              <button
+                className="btn"
+                type="button"
+                onClick={handleClickPayButton}>
+                <i className="material-icons left">payment</i>
+                Pay
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
 const ExpensesList = props => {
   const [checkedList, setCheckedList] = useState([]);
 
@@ -16,36 +67,13 @@ const ExpensesList = props => {
     });
   };
 
-  const makeListItem = expense => {
-    return (
-      <Card key={expense._id}>
-        <div className="ExpenseList__payment-card">
-          <div className="ExpenseList__payment-card-checkbox">
-            <label>
-              <input
-                type="checkbox"
-                className="filled-in"
-                value={expense._id}
-                onChange={handleCheckboxChange}
-              />
-              <span></span>
-            </label>
-          </div>
-
-          <div className="ExpenseList__payment-card-info">
-            <strong>{expense.accountName}</strong>
-            <p>{expense.period}</p>
-          </div>
-
-          <div>
-            <p>{expense.price}</p>
-          </div>
-        </div>
-      </Card>
-    );
-  };
-
-  const expenses = props.expenses.map(expense => makeListItem(expense));
+  const expenses = props.expenses.map(expense => (
+    <ExpenseItem
+      key={expense._id}
+      {...expense}
+      handleCheckboxChange={handleCheckboxChange}
+    />
+  ));
 
   return (
     <Container>

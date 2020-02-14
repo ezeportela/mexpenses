@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { getPeriod } from '../common';
 import { Expenses } from './index';
+import { Accounts } from '../accounts';
 
 Meteor.methods({
   createExpenseFromAccount(account) {
@@ -30,5 +31,18 @@ Meteor.methods({
         displayName
       });
     }
+  },
+
+  createExpensesFromAccounts() {
+    const period = getPeriod();
+    const accounts = Accounts.find({ nextPeriod: period });
+
+    for (const account of accounts) {
+      Meteor.call('createExpenseFromAccount', account);
+    }
+  },
+
+  payExpense(expenseId) {
+    Expenses.update(expenseId, { $set: { paid: true } });
   }
 });

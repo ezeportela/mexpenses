@@ -10,7 +10,7 @@ export default Card = props => {
   const content = (
     <div className={cardClassnames}>
       <div className={cardContentClassnames}>
-        <span className="card-title">{title}</span>
+        {title && <span className="card-title">{title}</span>}
         {children}
       </div>
     </div>

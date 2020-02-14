@@ -1,10 +1,14 @@
-.ExpenseList__payment-card {
-  display: flex;
+.expense-card-row {
+  margin-bottom: 0px !important;
 }
 
-.ExpenseList__payment-card-checkbox {
+.expense-card-checkbox {
+  padding-top: 7px !important;
+  padding-left: 20px !important;
 }
 
-.ExpenseList__payment-card-info {
-  flex-direction: column;
+.expense-card-price {
+  padding-top: 5px;
+  font-weight: bold;
+  font-size: 16px;
 }
