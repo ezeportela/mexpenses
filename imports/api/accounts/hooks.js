@@ -14,3 +14,8 @@ Accounts.before.insert((id, doc) => {
 Accounts.after.insert((id, doc) => {
   Meteor.call('expenses.createFromAccount', doc);
 });
+
+Accounts.before.remove((id, doc) => {
+  console.log('data', id, doc);
+  Meteor.call('expenses.deleteByAccountId', doc._id);
+});

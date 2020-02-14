@@ -12,7 +12,8 @@ Meteor.methods({
         periodicity: Match.Integer,
         lastPrice: Number,
         lastPeriod: Number,
-        expiredDay: 10
+        expireDay: Number,
+        active: Boolean
       });
 
       Object.assign(account, {

@@ -14,9 +14,11 @@ Meteor.methods({
         lastPrice: price,
         owner,
         email,
-        displayName
+        displayName,
+        expireDay
       } = account;
 
+      const expireDate = parseInt(`${period}${expireDay}`);
       Expenses.insert({
         accountId,
         accountName,
@@ -24,6 +26,7 @@ Meteor.methods({
         period,
         price,
         realPrice: price,
+        expireDate,
         paid: false,
         type: 'fixed',
         owner,
@@ -44,5 +47,9 @@ Meteor.methods({
 
   'expenses.pay'(expenseId) {
     Expenses.update(expenseId, { $set: { paid: true } });
+  },
+
+  'expenses.deleteByAccountId'(id) {
+    Expenses.remove({ accountId: id });
   }
 });

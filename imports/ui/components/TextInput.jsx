@@ -12,10 +12,12 @@ export default TextInput = props => {
     label,
     name,
     readOnly,
-    required
+    required,
+    validate
   } = props;
   const inputCol = col || 's12';
   const cssClasses = `input-field col ${inputCol}`;
+  const _validate = validate ? 'validate' : '';
 
   return (
     <div className={cssClasses}>
@@ -24,7 +26,7 @@ export default TextInput = props => {
         id={id}
         name={name}
         type={type || 'text'}
-        className="validate"
+        className={_validate}
         value={value}
         onChange={onChange}
         required={required || true}
@@ -42,5 +44,6 @@ TextInput.propTypes = {
   icon: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   required: PropTypes.bool,
-  readOnly: PropTypes.bool
+  readOnly: PropTypes.bool,
+  validate: PropTypes.bool
 };

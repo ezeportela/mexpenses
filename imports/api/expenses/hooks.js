@@ -19,4 +19,5 @@ Expenses.after.insert((id, doc) => {
     lastPeriod,
     nextPeriod
   });
+  Meteor.call('periods.insert', lastPeriod);
 });

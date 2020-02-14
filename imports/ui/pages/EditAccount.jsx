@@ -20,7 +20,7 @@ const EditAccount = props => {
     periodicity: 1,
     lastPrice: 0,
     lastPeriod: getPeriod(),
-    expiredDay: 10,
+    expireDay: 10,
     active: true
   });
   const prevFetch = usePrevious(props.account);
@@ -57,10 +57,11 @@ const EditAccount = props => {
   };
   const handleSubmit = e => {
     e.preventDefault();
-    const { periodicity, lastPrice } = account;
+    const { periodicity, lastPrice, expireDay } = account;
     Object.assign(account, {
       periodicity: parseInt(periodicity),
-      lastPrice: parseInt(lastPrice)
+      lastPrice: parseInt(lastPrice),
+      expireDay: parseInt(expireDay)
     });
     Meteor.call('accounts.save', id, account);
     props.history.push('/accounts');
@@ -78,6 +79,7 @@ const EditAccount = props => {
             label="Account Name"
             icon="label"
             value={account.name}
+            validate={true}
           />
 
           <TextInput
@@ -89,6 +91,7 @@ const EditAccount = props => {
             onChange={handleChange}
             value={account.lastPrice}
             icon="attach_money"
+            validate={true}
           />
 
           <TextInput
@@ -100,6 +103,7 @@ const EditAccount = props => {
             onChange={handleChange}
             value={account.periodicity}
             icon="calendar_view_day"
+            validate={true}
           />
 
           <TextInput
@@ -116,13 +120,14 @@ const EditAccount = props => {
 
           <TextInput
             col="s12 m6"
-            id="expiredDay"
-            name="expiredDay"
-            label="Expired Day"
+            id="expireDay"
+            name="expireDay"
+            label="Expire Day"
             type="number"
-            value={account.expiredDay}
+            value={account.expireDay}
             onChange={handleChange}
             icon="history"
+            validate={true}
           />
 
           <Checkbox

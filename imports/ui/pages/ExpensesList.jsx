@@ -5,8 +5,10 @@ import { Expenses } from '../../api/expenses';
 import Container from '../components/Container';
 import Card from '../components/Card';
 import './styles/ExpenseList.css';
-import { formatPeriod } from '../../api/common';
+import { formatPeriod, getPeriod } from '../../api/common';
 import Checkbox from '../components/Checkbox';
+import { Periods } from '../../api/periods';
+import Select from '../components/Select';
 
 const ExpenseItem = props => {
   const {
@@ -52,8 +54,10 @@ const ExpenseItem = props => {
     </Card>
   );
 };
+
 const ExpensesList = props => {
   const [checkedList, setCheckedList] = useState([]);
+  const { period, handlePeriodChange } = props;
 
   handleCheckboxChange = e => {
     setCheckedList({
@@ -72,13 +76,47 @@ const ExpensesList = props => {
 
   return (
     <Container>
+      <div className="row">
+        <Select
+          id="period"
+          name="period"
+          label="Period"
+          value={period.toString()}
+          icon="calendar_today"
+          options={props.periods}
+          valueProp="value"
+          displayProp="formated"
+          onChange={handlePeriodChange}
+        />
+      </div>
       <div className="row">{expenses}</div>
     </Container>
   );
 };
 
-export default ExpensesContainer = withTracker(() => {
+const ExpensesTracker = withTracker(props => {
+  const { userId, period, handlePeriodChange } = props;
   return {
-    expenses: Expenses.find({ owner: Meteor.user()._id }).fetch()
+    period,
+    handlePeriodChange,
+    periods: Periods.find({ owner: userId }).fetch(),
+    expenses: Expenses.find({ owner: userId, period }).fetch()
   };
 })(ExpensesList);
+
+export default ExpensesContainer = () => {
+  const userId = Meteor.user()._id;
+  const [period, setPeriod] = useState(getPeriod());
+
+  handlePeriodChange = e => {
+    setPeriod(parseInt(e.target.value));
+  };
+
+  return (
+    <ExpensesTracker
+      userId={userId}
+      period={period}
+      handlePeriodChange={handlePeriodChange}
+    />
+  );
+};
