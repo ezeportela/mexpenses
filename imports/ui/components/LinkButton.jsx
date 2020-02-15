@@ -7,13 +7,13 @@ export default Button = props => (
     to={props.to}
     className={`btn waves-effect waves-light ${props.classNames}`}>
     {props.icon && <i className="material-icons left">{props.icon}</i>}
-    <span className="hide-on-small-only">{props.label}</span>
+    {props.label && <span className="hide-on-small-only">{props.label}</span>}
   </Link>
 );
 
 Button.propTypes = {
   classNames: PropTypes.string,
   to: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   icon: PropTypes.string
 };

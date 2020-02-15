@@ -9,6 +9,9 @@ import { formatPeriod, getPeriod } from '../../api/common';
 import Checkbox from '../components/Checkbox';
 import { Periods } from '../../api/periods';
 import Select from '../components/Select';
+import MessageBox from '../components/MessageBox';
+import moment from 'moment';
+import LinkButton from '../components/LinkButton';
 
 const ExpenseItem = props => {
   const {
@@ -17,12 +20,27 @@ const ExpenseItem = props => {
     period,
     price,
     realPrice,
-    handleCheckboxChange
+    handleCheckboxChange,
+    expireDate
   } = props;
+
+  const formatedExpireDate = moment(expireDate, 'YYYYMMDD').format(
+    'DD MMM YYYY'
+  );
   const formatedPeriod = formatPeriod(period);
+
+  const cardFloatingActionButton = (
+    <LinkButton
+      to="/expenses"
+      classNames="btn-floating halfway-fab"
+      icon="edit"
+    />
+  );
+
   const handleClickPayButton = e => Meteor.call('expenses.pay', _id);
+
   return (
-    <Card>
+    <Card cardImagePlaceholder={cardFloatingActionButton}>
       <div className="row expense-card-row">
         <Checkbox
           col="s1 expense-card-checkbox"
@@ -37,16 +55,15 @@ const ExpenseItem = props => {
               <p>{formatedPeriod}</p>
             </div>
             <div className="col s5">
-              <p className="expense-card-price">$ {realPrice}</p>
+              <span className="expense-card-content valign-wrapper">
+                {formatedExpireDate}
+              </span>
             </div>
             <div className="col s2">
-              <button
-                className="btn"
-                type="button"
-                onClick={handleClickPayButton}>
-                <i className="material-icons left">payment</i>
-                Pay
-              </button>
+              <div className="expense-card-content valign-wrapper">
+                <span className="expense-card-price">$ {realPrice}</span>
+                {realPrice !== price && <span>($ {price})</span>}
+              </div>
             </div>
           </div>
         </div>
@@ -56,17 +73,16 @@ const ExpenseItem = props => {
 };
 
 const ExpensesList = props => {
-  const [checkedList, setCheckedList] = useState([]);
-  const { period, handlePeriodChange } = props;
+  const {
+    period,
+    handlePeriodChange,
+    checkedList,
+    handleCheckboxChange,
+    expenses,
+    periods
+  } = props;
 
-  handleCheckboxChange = e => {
-    setCheckedList({
-      ...checkedList,
-      [e.target.value]: e.target.checked
-    });
-  };
-
-  const expenses = props.expenses.map(expense => (
+  const renderExpenses = expenses.map(expense => (
     <ExpenseItem
       key={expense._id}
       {...expense}
@@ -83,22 +99,37 @@ const ExpensesList = props => {
           label="Period"
           value={period.toString()}
           icon="calendar_today"
-          options={props.periods}
+          options={periods}
           valueProp="value"
           displayProp="formated"
           onChange={handlePeriodChange}
         />
       </div>
-      <div className="row">{expenses}</div>
+      {expenses.length === 0 && (
+        <MessageBox
+          message="There aren't expenses for the selected period."
+          icon="info"
+        />
+      )}
+      <div className="row">{renderExpenses}</div>
     </Container>
   );
 };
 
 const ExpensesTracker = withTracker(props => {
-  const { userId, period, handlePeriodChange } = props;
+  const {
+    userId,
+    period,
+    handlePeriodChange,
+    checkedList,
+    handleCheckboxChange
+  } = props;
+
   return {
     period,
     handlePeriodChange,
+    checkedList,
+    handleCheckboxChange,
     periods: Periods.find({ owner: userId }).fetch(),
     expenses: Expenses.find({ owner: userId, period }).fetch()
   };
@@ -107,16 +138,26 @@ const ExpensesTracker = withTracker(props => {
 export default ExpensesContainer = () => {
   const userId = Meteor.user()._id;
   const [period, setPeriod] = useState(getPeriod());
+  const [checkedList, setCheckedList] = useState([]);
 
   handlePeriodChange = e => {
     setPeriod(parseInt(e.target.value));
   };
 
-  return (
-    <ExpensesTracker
-      userId={userId}
-      period={period}
-      handlePeriodChange={handlePeriodChange}
-    />
-  );
+  handleCheckboxChange = e => {
+    setCheckedList({
+      ...checkedList,
+      [e.target.value]: e.target.checked
+    });
+  };
+
+  const componentProps = {
+    userId,
+    period,
+    handlePeriodChange,
+    checkedList,
+    handleCheckboxChange
+  };
+
+  return <ExpensesTracker {...componentProps} />;
 };
