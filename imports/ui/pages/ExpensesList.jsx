@@ -13,6 +13,7 @@ import MessageBox from '../components/MessageBox';
 import moment from 'moment';
 import LinkButton from '../components/LinkButton';
 import Button from '../components/Button';
+import TextInput from '../components/TextInput';
 
 const ExpenseItem = props => {
   const {
@@ -83,7 +84,8 @@ const ExpenseList = props => {
     canSelect,
     canEdit,
     canPay,
-    onPayButtonClick
+    onPayButtonClick,
+    checkedList
   } = props;
 
   const renderExpenses = expenses.map(expense => (
@@ -96,17 +98,35 @@ const ExpenseList = props => {
     />
   ));
 
+  const total =
+    expenses.length === 0
+      ? 0
+      : expenses
+          .filter(expense => (checkedList ? checkedList[expense._id] : false))
+          .reduce((total, expense) => total + expense.realPrice, 0);
+
   return (
     <div className="expenses-list">
       <h4>{title}</h4>
-      {canPay && (
-        <div className="expense-card-button">
-          <Button
-            type="button"
-            icon="credit_card"
-            label="Pay"
-            onClick={onPayButtonClick}
+      {canPay && expenses.length > 0 && (
+        <div className="expense-card-button row">
+          <TextInput
+            col="s12 m2 offset-m8"
+            id="total"
+            name="total"
+            label="Total"
+            icon="attach_money"
+            value={total}
+            readOnly={true}
           />
+          <div className="col s12 m2 expense-pay-button">
+            <Button
+              type="button"
+              icon="credit_card"
+              label="Pay"
+              onClick={onPayButtonClick}
+            />
+          </div>
         </div>
       )}
       {expenses.length === 0 && (
@@ -133,7 +153,11 @@ const ExpensesList = props => {
 
   const showPeriods = periods.length > 0;
 
-  const handleClickPayButton = e => Meteor.call('expenses.pay', checkedList);
+  const handleClickPayButton = e => {
+    if (confirm('Are you sure do you want to pay the selected expenses?')) {
+      Meteor.call('expenses.pay', checkedList);
+    }
+  };
 
   return (
     <Container>
@@ -157,6 +181,7 @@ const ExpensesList = props => {
         title="Expenses to Pay"
         onSelectChange={handleCheckboxChange}
         onPayButtonClick={handleClickPayButton}
+        checkedList={checkedList}
         canSelect={true}
         canEdit={true}
         canPay={true}

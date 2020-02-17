@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import M from 'materialize-css';
 
 export default TextInput = props => {
   const {
@@ -15,6 +16,9 @@ export default TextInput = props => {
     required,
     validate
   } = props;
+
+  useEffect(() => M.updateTextFields());
+
   const inputCol = col || 's12';
   const cssClasses = `input-field col ${inputCol}`;
   const _validate = validate ? 'validate' : '';
