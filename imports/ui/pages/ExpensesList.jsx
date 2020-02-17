@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Expenses } from '../../api/expenses';
@@ -12,6 +12,7 @@ import Select from '../components/Select';
 import MessageBox from '../components/MessageBox';
 import moment from 'moment';
 import LinkButton from '../components/LinkButton';
+import Button from '../components/Button';
 
 const ExpenseItem = props => {
   const {
@@ -20,7 +21,7 @@ const ExpenseItem = props => {
     period,
     price,
     realPrice,
-    handleCheckboxChange,
+    onSelectChange,
     expireDate,
     canSelect,
     canEdit
@@ -39,8 +40,6 @@ const ExpenseItem = props => {
     />
   );
 
-  const handleClickPayButton = e => Meteor.call('expenses.pay', _id);
-
   return (
     <Card cardImagePlaceholder={canEdit && cardFloatingActionButton}>
       <div className="row expense-card-row">
@@ -48,7 +47,7 @@ const ExpenseItem = props => {
           <Checkbox
             col="s1 expense-card-checkbox"
             value={_id}
-            onChange={handleCheckboxChange}
+            onChange={onSelectChange}
           />
         )}
 
@@ -77,13 +76,21 @@ const ExpenseItem = props => {
 };
 
 const ExpenseList = props => {
-  const { expenses, title, handleCheckboxChange, canSelect, canEdit } = props;
+  const {
+    expenses,
+    title,
+    onSelectChange,
+    canSelect,
+    canEdit,
+    canPay,
+    onPayButtonClick
+  } = props;
 
   const renderExpenses = expenses.map(expense => (
     <ExpenseItem
       key={expense._id}
       {...expense}
-      handleCheckboxChange={handleCheckboxChange}
+      onSelectChange={onSelectChange}
       canSelect={canSelect}
       canEdit={canEdit}
     />
@@ -92,6 +99,16 @@ const ExpenseList = props => {
   return (
     <div className="expenses-list">
       <h4>{title}</h4>
+      {canPay && (
+        <div className="expense-card-button">
+          <Button
+            type="button"
+            icon="credit_card"
+            label="Pay"
+            onClick={onPayButtonClick}
+          />
+        </div>
+      )}
       {expenses.length === 0 && (
         <MessageBox
           message="There aren't expenses for the selected period."
@@ -114,27 +131,35 @@ const ExpensesList = props => {
     periods
   } = props;
 
+  const showPeriods = periods.length > 0;
+
+  const handleClickPayButton = e => Meteor.call('expenses.pay', checkedList);
+
   return (
     <Container>
-      <div className="row">
-        <Select
-          id="period"
-          name="period"
-          label="Period"
-          value={period.toString()}
-          icon="calendar_today"
-          options={periods}
-          valueProp="value"
-          displayProp="formated"
-          onChange={handlePeriodChange}
-        />
-      </div>
+      {showPeriods && (
+        <div className="row">
+          <Select
+            id="period"
+            name="period"
+            label="Period"
+            value={period.toString()}
+            icon="calendar_today"
+            options={periods}
+            valueProp="value"
+            displayProp="formated"
+            onChange={handlePeriodChange}
+          />
+        </div>
+      )}
       <ExpenseList
         expenses={expensesToPay}
         title="Expenses to Pay"
-        handleCheckboxChange={handleCheckboxChange}
+        onSelectChange={handleCheckboxChange}
+        onPayButtonClick={handleClickPayButton}
         canSelect={true}
         canEdit={true}
+        canPay={true}
       />
       <ExpenseList expenses={payments} title="Payments" />
     </Container>

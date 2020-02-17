@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import M from 'materialize-css';
 import Container from '../components/Container';
 import Card from '../components/Card';
+import MessageBox from '../components/MessageBox';
 
 const AccountsList = props => {
   useEffect(() => {
@@ -26,6 +27,10 @@ const AccountsList = props => {
 
   return (
     <Container>
+      {accounts.length === 0 && (
+        <MessageBox message="There aren't accounts." icon="info" />
+      )}
+
       <div className="row">{accounts}</div>
 
       <div className="fixed-action-btn">

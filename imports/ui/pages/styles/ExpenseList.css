@@ -18,3 +18,10 @@
   font-size: 18px;
   font-weight: 300;
 }
+
+.expense-card-button {
+  flex-direction: row;
+  flex: 1;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
