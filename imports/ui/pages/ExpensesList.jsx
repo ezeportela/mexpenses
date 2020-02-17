@@ -21,7 +21,9 @@ const ExpenseItem = props => {
     price,
     realPrice,
     handleCheckboxChange,
-    expireDate
+    expireDate,
+    canSelect,
+    canEdit
   } = props;
 
   const formatedExpireDate = moment(expireDate, 'YYYYMMDD').format(
@@ -40,13 +42,15 @@ const ExpenseItem = props => {
   const handleClickPayButton = e => Meteor.call('expenses.pay', _id);
 
   return (
-    <Card cardImagePlaceholder={cardFloatingActionButton}>
+    <Card cardImagePlaceholder={canEdit && cardFloatingActionButton}>
       <div className="row expense-card-row">
-        <Checkbox
-          col="s1 expense-card-checkbox"
-          value={_id}
-          onChange={handleCheckboxChange}
-        />
+        {canSelect && (
+          <Checkbox
+            col="s1 expense-card-checkbox"
+            value={_id}
+            onChange={handleCheckboxChange}
+          />
+        )}
 
         <div className="col s11">
           <div className="row expense-card-row">
@@ -72,23 +76,43 @@ const ExpenseItem = props => {
   );
 };
 
-const ExpensesList = props => {
-  const {
-    period,
-    handlePeriodChange,
-    checkedList,
-    handleCheckboxChange,
-    expenses,
-    periods
-  } = props;
+const ExpenseList = props => {
+  const { expenses, title, handleCheckboxChange, canSelect, canEdit } = props;
 
   const renderExpenses = expenses.map(expense => (
     <ExpenseItem
       key={expense._id}
       {...expense}
       handleCheckboxChange={handleCheckboxChange}
+      canSelect={canSelect}
+      canEdit={canEdit}
     />
   ));
+
+  return (
+    <div className="expenses-list">
+      <h4>{title}</h4>
+      {expenses.length === 0 && (
+        <MessageBox
+          message="There aren't expenses for the selected period."
+          icon="info"
+        />
+      )}
+      <div className="row">{renderExpenses}</div>
+    </div>
+  );
+};
+
+const ExpensesList = props => {
+  const {
+    period,
+    handlePeriodChange,
+    checkedList,
+    handleCheckboxChange,
+    expensesToPay,
+    payments,
+    periods
+  } = props;
 
   return (
     <Container>
@@ -105,13 +129,14 @@ const ExpensesList = props => {
           onChange={handlePeriodChange}
         />
       </div>
-      {expenses.length === 0 && (
-        <MessageBox
-          message="There aren't expenses for the selected period."
-          icon="info"
-        />
-      )}
-      <div className="row">{renderExpenses}</div>
+      <ExpenseList
+        expenses={expensesToPay}
+        title="Expenses to Pay"
+        handleCheckboxChange={handleCheckboxChange}
+        canSelect={true}
+        canEdit={true}
+      />
+      <ExpenseList expenses={payments} title="Payments" />
     </Container>
   );
 };
@@ -125,13 +150,17 @@ const ExpensesTracker = withTracker(props => {
     handleCheckboxChange
   } = props;
 
+  const fetchExpenses = paid =>
+    Expenses.find({ owner: userId, period, type: 'fixed', paid }).fetch();
+
   return {
     period,
     handlePeriodChange,
     checkedList,
     handleCheckboxChange,
     periods: Periods.find({ owner: userId }).fetch(),
-    expenses: Expenses.find({ owner: userId, period }).fetch()
+    expensesToPay: fetchExpenses(false),
+    payments: fetchExpenses(true)
   };
 })(ExpensesList);
 
