@@ -35,7 +35,7 @@ const ExpenseItem = props => {
 
   const cardFloatingActionButton = (
     <LinkButton
-      to="/expenses"
+      to={`/expenses/${_id}/edit`}
       classNames="btn-floating halfway-fab"
       icon="edit"
     />
@@ -186,7 +186,7 @@ const ExpensesList = props => {
         canEdit={true}
         canPay={true}
       />
-      <ExpenseList expenses={payments} title="Payments" />
+      <ExpenseList expenses={payments} title="Payments" canEdit={true} />
     </Container>
   );
 };

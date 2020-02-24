@@ -6,6 +6,7 @@ import Signin from './pages/Signin';
 import EditAccount from './pages/EditAccount';
 import AccountsList from './pages/AccountsList';
 import ExpensesList from './pages/ExpensesList';
+import EditExpense from './pages/EditExpense';
 
 export default Router = props => (
   <BrowserRouter>
@@ -22,6 +23,11 @@ export default Router = props => (
               exact
               path="/accounts/:accountId/edit"
               component={EditAccount}
+            />
+            <Route
+              exact
+              path="/expenses/:expenseId/edit"
+              component={EditExpense}
             />
           </React.Fragment>
         ) : (

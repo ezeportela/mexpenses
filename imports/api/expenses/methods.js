@@ -45,6 +45,10 @@ Meteor.methods({
     }
   },
 
+  'expenses.save'(id, expense) {
+    Expenses.update(id, expense);
+  },
+
   'expenses.pay'(items) {
     for (const id of Object.keys(items)) {
       if (items[id]) {
@@ -55,5 +59,9 @@ Meteor.methods({
 
   'expenses.deleteByAccountId'(id) {
     Expenses.remove({ accountId: id });
+  },
+
+  'expenses.delete'(id) {
+    Expenses.remove(id);
   }
 });

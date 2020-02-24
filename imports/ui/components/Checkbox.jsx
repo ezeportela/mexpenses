@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './styles/Checkbox.css';
 
 export default Checkbox = props => {
   const { col, value, onChange, label, checked, name } = props;
   const inputCol = col || 's12';
-  const cssClasses = `col ${inputCol}`;
+  const cssClasses = `input-checkbox col ${inputCol}`;
   return (
     <div className={cssClasses}>
       <label>
