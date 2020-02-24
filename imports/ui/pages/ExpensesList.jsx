@@ -201,7 +201,10 @@ const ExpensesTracker = withTracker(props => {
   } = props;
 
   const fetchExpenses = paid =>
-    Expenses.find({ owner: userId, period, type: 'fixed', paid }).fetch();
+    Expenses.find(
+      { owner: userId, period, type: 'fixed', paid },
+      { sort: { accountName: 1 } }
+    ).fetch();
 
   return {
     period,

@@ -44,6 +44,9 @@ const AccountsList = props => {
 
 export default AccountsContainer = withTracker(() => {
   return {
-    accounts: Accounts.find({ owner: Meteor.user()._id }).fetch()
+    accounts: Accounts.find(
+      { owner: Meteor.user()._id },
+      { sort: { name: 1 } }
+    ).fetch()
   };
 })(AccountsList);
