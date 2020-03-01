@@ -12,5 +12,5 @@ import './schedule';
 
 Meteor.startup(() => {
   Meteor.call('expenses.createFromAccounts');
-  SyncedCron.start();
+  // SyncedCron.start();
 });
