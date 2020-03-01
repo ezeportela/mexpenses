@@ -211,7 +211,7 @@ const ExpensesTracker = withTracker(props => {
     handlePeriodChange,
     checkedList,
     handleCheckboxChange,
-    periods: Periods.find({ owner: userId }).fetch(),
+    periods: Periods.find().fetch(),
     expensesToPay: fetchExpenses(false),
     payments: fetchExpenses(true)
   };
