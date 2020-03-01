@@ -6,9 +6,7 @@ import moment from 'moment';
 Meteor.methods({
   'periods.insert'(value) {
     check(value, Number);
-    const user = Meteor.users.findOne(this.userId);
-
-    const count = Periods.find().count();
+    const count = Periods.find({ value: moment(value, 'YYYYMM') }).count();
 
     if (count === 0) {
       const formated = moment(value, 'YYYYMM').format('MMM YYYY');
