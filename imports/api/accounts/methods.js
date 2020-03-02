@@ -40,5 +40,12 @@ Meteor.methods({
     check(id, String);
 
     Accounts.remove(id);
+  },
+
+  'accounts.updatePrice'(id, lastPrice) {
+    check(id, String);
+    check(lastPrice, Match.Integer);
+
+    Accounts.update(id, { $set: { lastPrice } });
   }
 });

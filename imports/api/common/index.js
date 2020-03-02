@@ -7,5 +7,8 @@ export const getPeriod = (months = 0, period = []) =>
       .format('YYYYMM')
   );
 
+export const formatPeriodValue = period =>
+  moment(period, 'YYYYMM').format('YYYYMM');
+
 export const formatPeriod = period =>
   moment(period, 'YYYYMM').format('MMM YYYY');

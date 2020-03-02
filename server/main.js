@@ -9,8 +9,10 @@ import '/imports/api/expenses/hooks';
 import '/imports/api/periods/methods';
 
 import './schedule';
+import { getPeriod } from '../imports/api/common';
 
 Meteor.startup(() => {
+  Meteor.call('periods.insert', getPeriod());
   Meteor.call('expenses.createFromAccounts');
   // SyncedCron.start();
 });

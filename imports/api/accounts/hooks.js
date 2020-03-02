@@ -16,6 +16,5 @@ Accounts.after.insert((id, doc) => {
 });
 
 Accounts.before.remove((id, doc) => {
-  console.log('data', id, doc);
   Meteor.call('expenses.deleteByAccountId', doc._id);
 });
