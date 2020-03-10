@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import Info from './Info';
+import Home from './pages/Home';
 import Signin from './pages/Signin';
 import EditAccount from './pages/EditAccount';
 import AccountsList from './pages/AccountsList';
@@ -12,7 +12,7 @@ export default Router = props => (
   <BrowserRouter>
     <Layout currentUser={props.currentUser}>
       <Switch>
-        <Route exact path="/" component={Info} />
+        <Route exact path="/" component={Home} />
 
         {props.currentUser ? (
           <React.Fragment>
