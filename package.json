@@ -13,7 +13,7 @@
     "lodash": "^4.17.15",
     "materialize-css": "^1.0.0",
     "meteor-node-stubs": "^1.0.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-bar-chart": "^0.1.2",
